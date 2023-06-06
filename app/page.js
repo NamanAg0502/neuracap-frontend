@@ -2,15 +2,29 @@
 
 import { useViewportSize } from '@mantine/hooks';
 import { Sidebar } from './components/Sidebar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import HomePage from './pages/home/page';
 import CreateQuestion from './pages/questions/create/page';
 import Questions from './pages/questions/page';
 import { Grid } from '@mantine/core';
+import Cookies from 'js-cookie';
+import Login from './pages/auth/login/page';
 
-const Home = () => {
+export default function Home() {
   const [content, setContent] = useState(1);
   const { height, width } = useViewportSize();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = Cookies.get('token');
+    if (token) {
+      setUser(token);
+    }
+  }, []);
+
+  if (!user) {
+    return <Login />;
+  }
 
   return (
     <div className="flex justify-end items-start bg-white">
@@ -34,6 +48,4 @@ const Home = () => {
       </Grid>
     </div>
   );
-};
-
-export default Home;
+}

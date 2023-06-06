@@ -9,8 +9,8 @@ import {
   Container,
   Group,
   Button,
-  Notification,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { useForm } from '@mantine/form';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -19,7 +19,6 @@ import { useState } from 'react';
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const form = useForm({
     initialValues: {
@@ -43,7 +42,6 @@ export default function Login() {
 
   const handleSubmit = (values) => {
     setLoading(true);
-    console.log(values);
     try {
       form.validate();
       // Send a request to the backend to login the user
@@ -53,11 +51,30 @@ export default function Login() {
           const token = response.data.token;
           Cookies.set('token', token);
           setLoading(false);
+          notifications.show({
+            title: 'Success',
+            message: 'Logged in successfully',
+            color: 'teal',
+            position: 'bottom-right',
+          });
           router.replace('/');
+        })
+        .catch((error) => {
+          notifications.show({
+            title: 'Error',
+            message: error.message,
+            color: 'red',
+            position: 'bottom-right',
+          });
+          setLoading(false);
         });
-      form.clear();
     } catch (error) {
-      setError(error);
+      notifications.show({
+        title: 'Error',
+        message: error.message,
+        color: 'red',
+        position: 'bottom-right',
+      });
       setLoading(false);
     }
   };
@@ -105,26 +122,6 @@ export default function Login() {
           </form>
         </Paper>
       </Container>
-      {/* <Notification title="Success" message="Logged in successfully" /> */}
-      <div className="w-full flex justify-end px-5">
-        {error && (
-          <Notification
-            title="Error"
-            message={error.message}
-            w={400}
-            color="red"
-          />
-        )}
-        {loading && (
-          <Notification
-            title="Success"
-            color="teal"
-            message="Logged in successfully"
-            w={400}
-            position="bottom-right"
-          />
-        )}
-      </div>
     </div>
   );
 }
