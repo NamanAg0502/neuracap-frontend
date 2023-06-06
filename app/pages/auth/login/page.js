@@ -48,7 +48,7 @@ export default function Login() {
       form.validate();
       // Send a request to the backend to login the user
       axios
-        .post('http://localhost:4000/auth/login/', values)
+        .post(`${process.env.APP_URL}/auth/login/`, values)
         .then((response) => {
           const token = response.data.token;
           Cookies.set('token', token);

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import TextEditor from '@/app/components/TextEditor';
 import { NativeSelect, TextInput } from '@mantine/core';
